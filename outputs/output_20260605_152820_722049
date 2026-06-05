@@ -1,0 +1,17 @@
+{
+    "title": "Today's Date",
+    "summary": "As of the system date, today's date is September 24, 2025 (2025-09-24).",
+    "key_points": [
+        "ISO 8601 format: 2025-09-24",
+        "Day of week: Wednesday",
+        "Week number (ISO): 39",
+        "Day of year: 267",
+        "Date can be expressed in various formats (Unix timestamp, Julian date, etc.) via online tools"
+    ],
+    "recommendations": [
+        "Use reputable websites or built-in system functions to obtain the current date.",
+        "Verify the time zone if the date is needed for scheduling across regions.",
+        "For precise timestamps, consider using UTC to avoid daylight\u2011saving ambiguities.",
+        "Leverage date\u2011calculation tools for conversions between formats when required."
+    ]
+}
