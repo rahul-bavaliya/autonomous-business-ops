@@ -239,6 +239,9 @@ Create a `.env` file.
 
 ```env
 NVIDIA_API_KEY=YOUR_API_KEY
+NVIDIA_NIM_API_URL=https://integrate.api.nvidia.com/v1
+CHAT_MODEL=nvidia/nemotron-3-super-120b-a12b
+EMBEDDING_MODEL=nvidia/nv-embed-v1
 ```
 
 ---
