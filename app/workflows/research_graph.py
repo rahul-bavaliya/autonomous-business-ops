@@ -23,10 +23,16 @@ class ResearchState(TypedDict, total=False):
 
     search_result_count: int
 
-    search_quality: str
+    search_score: int
+
+    retry_count: int
 
     report: dict
 
+
+# ==================================================
+# Router
+# ==================================================
 
 def router_node(
     state: ResearchState
@@ -34,25 +40,6 @@ def router_node(
 
     logger.info(
         "Running Router Node"
-    )
-
-    topic = state["topic"].lower()
-
-    if (
-        "today" in topic
-        and "date" in topic
-    ):
-
-        logger.info(
-            "Routing to Date Tool"
-        )
-
-        return {
-            "route": "date"
-        }
-
-    logger.info(
-        "Routing to Research Flow"
     )
 
     return {
@@ -67,27 +54,9 @@ def route_query(
     return state["route"]
 
 
-def date_node(
-    state: ResearchState
-):
-
-    logger.info(
-        "Running Date Tool Node"
-    )
-
-    today = datetime.now().strftime(
-        "%Y-%m-%d"
-    )
-
-    report = {
-        "title": "Today's Date",
-        "summary": f"Today's date is {today}"
-    }
-
-    return {
-        "report": report
-    }
-
+# ==================================================
+# Search
+# ==================================================
 
 def search_node(
     state: ResearchState
@@ -119,56 +88,128 @@ def search_node(
     }
 
 
-def quality_check_node(
+# ==================================================
+# Search Evaluation
+# ==================================================
+
+def evaluate_search_node(
     state: ResearchState
 ):
 
     logger.info(
-        "Running Quality Check Node"
+        "Running Search Evaluation Node"
     )
 
-    count = state.get(
+    result_count = state.get(
         "search_result_count",
         0
     )
 
-    if count >= 3:
+    score = 0
 
-        logger.info(
-            "Search quality is GOOD"
-        )
+    if result_count >= 5:
+        score = 10
 
-        return {
-            "search_quality": "good"
-        }
+    elif result_count >= 3:
+        score = 7
 
-    logger.warning(
-        "Search quality is POOR"
+    elif result_count >= 1:
+        score = 4
+
+    logger.info(
+        f"Search score: {score}"
     )
 
     return {
-        "search_quality": "poor"
+        "search_score": score
     }
 
 
-def route_after_quality_check(
+def route_after_evaluation(
     state: ResearchState
 ):
 
-    quality = state.get(
-        "search_quality",
-        "poor"
+    score = state.get(
+        "search_score",
+        0
     )
 
     logger.info(
-        f"Routing decision: {quality}"
+        f"Routing using score: {score}"
     )
 
-    if quality == "good":
+    if score >= 7:
+
+        logger.info(
+            "Routing to Research Node"
+        )
+
         return "research"
 
-    return "end"
+    logger.warning(
+        "Routing to Retry Search Node"
+    )
 
+    return "retry"
+
+
+# ==================================================
+# Retry Search
+# ==================================================
+
+def retry_search_node(
+    state: ResearchState
+):
+
+    logger.info(
+        "Running Retry Search Node"
+    )
+
+    retry_count = state.get(
+        "retry_count",
+        0
+    )
+
+    retry_count += 1
+
+    logger.info(
+        f"Retry count: {retry_count}"
+    )
+
+    if retry_count >= 2:
+
+        logger.warning(
+            "Maximum retries reached"
+        )
+
+        return {
+            "retry_count": retry_count,
+            "route": "end"
+        }
+
+    return {
+        "retry_count": retry_count
+    }
+
+
+def route_after_retry(
+    state: ResearchState
+):
+
+    retry_count = state.get(
+        "retry_count",
+        0
+    )
+
+    if retry_count >= 2:
+        return "end"
+
+    return "search"
+
+
+# ==================================================
+# Research
+# ==================================================
 
 def research_node(
     state: ResearchState
@@ -190,6 +231,10 @@ def research_node(
     }
 
 
+# ==================================================
+# Save
+# ==================================================
+
 def save_node(
     state: ResearchState
 ):
@@ -197,8 +242,6 @@ def save_node(
     logger.info(
         "Running Save Node"
     )
-
-    report = state["report"]
 
     filename = (
         "output_" +
@@ -209,11 +252,15 @@ def save_node(
 
     file_tool.save_json(
         filename=filename,
-        data=report
+        data=state["report"]
     )
 
     return {}
 
+
+# ==================================================
+# Graph
+# ==================================================
 
 graph_builder = StateGraph(
     ResearchState
@@ -225,18 +272,18 @@ graph_builder.add_node(
 )
 
 graph_builder.add_node(
-    "date",
-    date_node
-)
-
-graph_builder.add_node(
     "search",
     search_node
 )
 
 graph_builder.add_node(
-    "quality_check",
-    quality_check_node
+    "evaluate_search",
+    evaluate_search_node
+)
+
+graph_builder.add_node(
+    "retry_search",
+    retry_search_node
 )
 
 graph_builder.add_node(
@@ -258,26 +305,29 @@ graph_builder.add_conditional_edges(
     "router",
     route_query,
     {
-        "date": "date",
         "research": "search"
     }
 )
 
 graph_builder.add_edge(
-    "date",
-    "save"
-)
-
-graph_builder.add_edge(
     "search",
-    "quality_check"
+    "evaluate_search"
 )
 
 graph_builder.add_conditional_edges(
-    "quality_check",
-    route_after_quality_check,
+    "evaluate_search",
+    route_after_evaluation,
     {
         "research": "research",
+        "retry": "retry_search"
+    }
+)
+
+graph_builder.add_conditional_edges(
+    "retry_search",
+    route_after_retry,
+    {
+        "search": "search",
         "end": END
     }
 )
