@@ -1,125 +1,106 @@
-# Autonomous Business Operations Platform
+# Autonomous Business Operations Agent Platform
 
-An AI-powered autonomous business operations platform built with LangGraph, NVIDIA NIM, and Agentic AI principles.
+An AI-powered multi-agent platform that combines Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), semantic search, and workflow orchestration to automate business operations.
 
-The long-term vision is to create a virtual operations team composed of specialized AI agents that can perform research, planning, decision-making, knowledge retrieval, and business process automation.
-
----
-
-# Project Vision
-
-Traditional software follows predefined workflows.
-
-Agentic systems can:
-
-- Observe
-- Reason
-- Decide
-- Act
-
-This project explores how to build autonomous business workflows using:
-
-- LangGraph
-- NVIDIA NIM
-- Embeddings
-- RAG
-- Multi-Agent Systems
-- MCP (Model Context Protocol)
+The long-term vision is to create a team of AI agents that can perform research, retrieve company knowledge, make decisions, collaborate, and execute business workflows autonomously.
 
 ---
 
-# Current Features
+# Features
 
 ## Research Agent
 
-The platform currently supports:
+- Internet research using DuckDuckGo Search
+- AI-powered report generation using NVIDIA NIM
+- Structured JSON outputs
+- Search quality evaluation
+- Conditional workflow routing using LangGraph
 
-- User research requests
-- DuckDuckGo search integration
-- NVIDIA NIM LLM integration
-- Structured JSON responses
-- LangGraph workflows
-- Quality validation
-- Automatic report generation
-- Timestamped output files
+## Knowledge Agent (RAG)
 
-Example:
+- NVIDIA Embeddings (`nv-embed-v1`)
+- ChromaDB Vector Database
+- Semantic Search
+- Document Ingestion Pipeline
+- Retrieval-Augmented Generation (RAG)
+- Company Knowledge Base Support
 
-Input:
+## Workflow Engine
+
+- LangGraph
+- Stateful Agent Workflows
+- Conditional Routing
+- Modular Node Architecture
+- Extensible Multi-Agent Design
+
+## Logging & Monitoring
+
+- Structured Logging
+- Execution Tracing
+- Workflow Visibility
+- Agent Activity Monitoring
+
+---
+
+# Current Architecture
 
 ```text
-What is Anthropic MCP?
-```
+                          User
+                            │
+                            ▼
+                     LangGraph Router
+                            │
+                ┌───────────┴───────────┐
+                │                       │
+                ▼                       ▼
 
-Output:
+        Research Agent          Knowledge Agent
+        (Internet Search)       (RAG Search)
 
-```json
-{
-  "title": "Model Context Protocol (MCP)",
-  "summary": "...",
-  "key_points": [],
-  "recommendations": []
-}
+                │                       │
+                ▼                       ▼
+
+         DuckDuckGo Search       ChromaDB Vector Store
+                │                       │
+                ▼                       ▼
+
+         NVIDIA Nemotron         NVIDIA Embeddings
+
+                └───────────┬───────────┘
+                            │
+                            ▼
+                         Response
 ```
 
 ---
 
-# Architecture
+# Tech Stack
 
-```text
-                ┌─────────────┐
-                │ User Input  │
-                └──────┬──────┘
-                       │
-                       ▼
-                ┌─────────────┐
-                │   Router    │
-                └──────┬──────┘
-                       │
-         ┌─────────────┴─────────────┐
-         │                           │
-         ▼                           ▼
-   Date Tool                  Research Flow
-                                   │
-                                   ▼
-                              Search Node
-                                   │
-                                   ▼
-                          Quality Check Node
-                                   │
-                                   ▼
-                            Research Node
-                                   │
-                                   ▼
-                               Save Node
-                                   │
-                                   ▼
-                               JSON File
-```
+## AI / LLM
 
----
+- NVIDIA NIM
+- NVIDIA Nemotron
+- NVIDIA Embeddings
 
-# Technology Stack
-
-## AI Framework
+## Agent Framework
 
 - LangGraph
 
-## LLM Provider
+## Vector Database
 
-- NVIDIA NIM API
+- ChromaDB
 
 ## Search
 
-- DDGS (DuckDuckGo Search)
-
-## Validation
-
-- Pydantic
+- DuckDuckGo Search
 
 ## Language
 
 - Python 3.12+
+
+## Validation
+
+- Pydantic
 
 ## Logging
 
@@ -132,65 +113,53 @@ Output:
 ```text
 autonomous-business-ops/
 
+│
 ├── app/
-│   ├── llm/
-│   │   └── llm_service.py
-│   │
-│   ├── models/
-│   │   └── report.py
-│   │
-│   ├── services/
-│   │   └── research_service.py
-│   │
-│   ├── tools/
-│   │   ├── search_tool.py
-│   │   └── file_tool.py
-│   │
-│   ├── utils/
-│   │   └── logger.py
-│   │
-│   ├── workflows/
-│   │   └── research_graph.py
-│   │
-│   └── main.py
+│
+├── config/
+│   └── settings.py
+│
+├── embeddings/
+│   ├── embedding_service.py
+│   └── vector_store.py
+│
+├── ingestion/
+│   ├── chunker.py
+│   └── ingest_documents.py
+│
+├── models/
+│   ├── report.py
+│   └── state.py
+│
+├── rag/
+│   └── retriever.py
+│
+├── services/
+│   ├── llm_service.py
+│   ├── rag_service.py
+│   └── research_service.py
+│
+├── tools/
+│   ├── file_tool.py
+│   └── search_tool.py
+│
+├── utils/
+│   └── logger.py
+│
+├── workflows/
+│   └── research_graph.py
+│
+├── documents/
 │
 ├── outputs/
 │
-├── .env
+├── vector_db/
+│
+├── main.py
+│
 ├── requirements.txt
+│
 └── README.md
-```
-
----
-
-# Workflow
-
-## Research Workflow
-
-```text
-START
-  │
-  ▼
-Router
-  │
-  ├── Date Tool
-  │      │
-  │      ▼
-  │    Save
-  │
-  └── Search
-          │
-          ▼
-   Quality Check
-          │
-          ▼
-      Research
-          │
-          ▼
-        Save
-          │
-          ▼
-         END
 ```
 
 ---
@@ -200,30 +169,32 @@ Router
 ## Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/YOUR_USERNAME/autonomous-business-ops.git
 
 cd autonomous-business-ops
 ```
 
+---
+
 ## Create Virtual Environment
+
+### Windows
 
 ```bash
 python -m venv .venv
-```
 
-Activate:
-
-Windows:
-
-```powershell
 .venv\Scripts\activate
 ```
 
-Linux/Mac:
+### Linux / Mac
 
 ```bash
+python3 -m venv .venv
+
 source .venv/bin/activate
 ```
+
+---
 
 ## Install Dependencies
 
@@ -235,10 +206,10 @@ pip install -r requirements.txt
 
 # Environment Variables
 
-Create a `.env` file.
+Create a `.env` file in the root directory:
 
 ```env
-NVIDIA_NIM_API_KEY=YOUR_API_KEY
+NVIDIA_NIM_API_KEY=nvapi-****
 NVIDIA_NIM_API_URL=https://integrate.api.nvidia.com/v1
 CHAT_MODEL=nvidia/nemotron-3-super-120b-a12b
 EMBEDDING_MODEL=nvidia/nv-embed-v1
@@ -246,7 +217,9 @@ EMBEDDING_MODEL=nvidia/nv-embed-v1
 
 ---
 
-# Run Application
+# Running Research Agent
+
+Start the application:
 
 ```bash
 python -m app.main
@@ -255,131 +228,284 @@ python -m app.main
 Example:
 
 ```text
-Research Topic: LangGraph
+Research Topic:
+LangGraph
 ```
 
----
+Output:
 
-# Sample Output
+```text
+TITLE
+LangGraph Overview
 
-Output files are stored in:
+SUMMARY
+LangGraph is a framework for building stateful AI agents...
+```
+
+Generated reports are stored in:
 
 ```text
 outputs/
 ```
 
-Example:
-
-```text
-output_20260605_152820_722049.json
-```
-
 ---
 
-# Logging
+# Running Document Ingestion
 
-The platform provides detailed logs for:
+Place text files inside:
 
-- Search execution
-- Routing decisions
-- LLM requests
-- Validation
-- File generation
+```text
+documents/
+```
 
 Example:
 
 ```text
-Running Search Node
-Search result count: 5
+documents/
 
-Running Quality Check Node
-Search quality is GOOD
+    langgraph.txt
+    mcp.txt
+    ai_agents.txt
+```
 
-Running Research Node
+Run ingestion:
 
-Running Save Node
+```bash
+python -m app.ingestion.ingest_documents
+```
+
+Example output:
+
+```text
+Stored: langgraph_0
+Stored: mcp_0
+Stored: ai_agents_0
+```
+
+Embeddings are stored in:
+
+```text
+vector_db/
 ```
 
 ---
 
-# Roadmap
+# Testing Retrieval
 
-## Phase 1 (Completed)
+Run:
+
+```bash
+python -m app.test_retrieval
+```
+
+Example:
+
+```text
+What is LangGraph?
+```
+
+Output:
+
+```text
+LangGraph is a framework for building stateful AI agents.
+```
+
+---
+
+# Testing RAG
+
+Run:
+
+```bash
+python -m app.test_rag
+```
+
+Example:
+
+```text
+Question:
+What is LangGraph?
+```
+
+Output:
+
+```text
+LangGraph is a framework for building stateful AI agents...
+```
+
+---
+
+# Example Workflow
+
+## Research Workflow
+
+```text
+User Query
+      │
+      ▼
+Search Node
+      │
+      ▼
+Search Evaluation Node
+      │
+      ▼
+Research Node
+      │
+      ▼
+Save Node
+      │
+      ▼
+JSON Report
+```
+
+---
+
+## RAG Workflow
+
+```text
+Question
+      │
+      ▼
+Embedding
+      │
+      ▼
+Vector Search
+      │
+      ▼
+Relevant Chunks
+      │
+      ▼
+NVIDIA Nemotron
+      │
+      ▼
+Answer
+```
+
+---
+
+# Development Roadmap
+
+## Completed
+
+### Milestone 1
 
 - NVIDIA NIM Integration
-- LangGraph Workflow
+- LLM Service
+
+### Milestone 2
+
 - Search Tool
-- Structured Output
+- Research Service
+
+### Milestone 3
+
+- LangGraph Workflow
+- Routing Logic
+
+### Milestone 4
+
 - Logging
-- JSON Export
+- Search Evaluation
 
-## Phase 2 (In Progress)
-
-- Router Node
-- Tool Selection
-- Conditional Edges
-- Retry Logic
-
-## Phase 3
+### Milestone 5
 
 - NVIDIA Embeddings
-- Chunking
-- Vector Database
-- Retrieval
-- RAG Pipeline
+- ChromaDB
+- Retriever
+- RAG Service
 
-## Phase 4
+---
 
+## Next Milestones
+
+### Milestone 6
+
+Hybrid Agent Router
+
+```text
+Question
+    │
+    ▼
+Router
+    │
+ ┌──┴──┐
+ │     │
+ ▼     ▼
+
+RAG   Search
+```
+
+### Milestone 7
+
+Agent Memory
+
+- Conversation History
 - Persistent Memory
-- Knowledge Base
-- Long-Term Context
+- Long-Term Knowledge
 
-## Phase 5
+### Milestone 8
 
-- Multi-Agent System
+Multi-Agent System
 
-Agents:
-
-- Executive Agent
 - Research Agent
+- Knowledge Agent
+- Planner Agent
+- Supervisor Agent
+
+### Milestone 9
+
+MCP Integration
+
+- Tool Discovery
+- External Systems
+- Standardized Tool Access
+
+### Milestone 10
+
+Autonomous Business Operations Platform
+
 - Sales Agent
-- Finance Agent
+- HR Agent
 - Operations Agent
-
-## Phase 6
-
-- MCP Integration
-- External Tools
-- SaaS Integrations
-- Autonomous Workflows
+- Finance Agent
+- Executive Agent
 
 ---
 
-# Learning Objectives
+# Learning Goals
 
-This project is designed to teach:
+This project is designed to provide hands-on experience with:
 
-- Agent Engineering
+- AI Agents
 - LangGraph
-- Tool Calling
-- LLM Orchestration
-- RAG Systems
+- Retrieval-Augmented Generation (RAG)
 - Vector Databases
+- NVIDIA NIM
+- Embeddings
+- Semantic Search
 - Multi-Agent Systems
-- MCP
-- Production AI Architecture
+- MCP (Model Context Protocol)
+- Autonomous AI Systems
 
 ---
 
-# Future Vision
+# License
 
-The final platform will function as a virtual business operations team where specialized AI agents collaborate to:
+MIT License
 
-- Research information
-- Retrieve company knowledge
-- Analyze business data
-- Generate recommendations
-- Coordinate workflows
-- Execute operational tasks
+---
 
-The goal is to evolve from a simple research assistant into a fully autonomous business operations platform.
+# Author
+
+Rahul Bavaliya
+
+Software Developer | AI Engineer
+
+Location: Regina, Saskatchewan, Canada
+
+Focus Areas:
+
+- Artificial Intelligence
+- Machine Learning
+- Agentic AI Systems
+- Autonomous Business Operations

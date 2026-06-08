@@ -40,6 +40,21 @@ class ResearchAgent:
         )
 
         return report
+    
+
+    def answer(
+        self,
+        question: str,
+        search_context: str
+    ):
+
+        logger.info("Research Agent selected")
+
+        return research_service.research(
+            topic=question,
+            search_results=search_context
+        )
+
 
 
 research_agent = ResearchAgent()
