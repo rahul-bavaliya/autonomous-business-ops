@@ -1,123 +1,203 @@
 # Autonomous Business Operations Agent Platform
 
-An AI-powered multi-agent platform that combines Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), semantic search, and workflow orchestration to automate business operations.
+An AI-powered multi-agent platform that combines:
 
-The long-term vision is to create a team of AI agents that can perform research, retrieve company knowledge, make decisions, collaborate, and execute business workflows autonomously.
+- Large Language Models (LLMs)
+- Retrieval-Augmented Generation (RAG)
+- Semantic Search
+- Internet Research
+- Agent Memory
+- Query Rewriting
+- Multi-Agent Routing
+- Workflow Orchestration
+
+The long-term goal is to build an autonomous team of AI agents capable of researching, retrieving knowledge, planning, collaborating, and executing business workflows.
 
 ---
 
 # Features
-
-## Research Agent
-
-- Internet research using DuckDuckGo Search
-- AI-powered report generation using NVIDIA NIM
-- Structured JSON outputs
-- Search quality evaluation
-- Conditional workflow routing using LangGraph
 
 ## Knowledge Agent (RAG)
 
 - NVIDIA Embeddings (`nv-embed-v1`)
 - ChromaDB Vector Database
 - Semantic Search
-- Document Ingestion Pipeline
-- Retrieval-Augmented Generation (RAG)
-- Company Knowledge Base Support
+- Hybrid Retrieval
+- Keyword Search
+- Reranking
+- Query Rewriting
+- Conversational RAG
+- Memory-Aware Retrieval
 
-## Workflow Engine
+---
 
-- LangGraph
-- Stateful Agent Workflows
-- Conditional Routing
-- Modular Node Architecture
-- Extensible Multi-Agent Design
+## Research Agent
+
+- DuckDuckGo Search
+- Web Research
+- Structured Research Reports
+- JSON Output Validation
+- Search Result Summarization
+- External Knowledge Retrieval
+
+---
+
+## Router Agent
+
+Routes questions to the appropriate agent.
+
+### Knowledge Route
+
+Used when the question is likely answerable from the internal knowledge base.
+
+Example:
+
+```text
+What is LangGraph?
+Who created it?
+```
+
+### Research Route
+
+Used when the question requires external information.
+
+Example:
+
+```text
+What is Saskatchewan?
+Latest NVIDIA stock news
+Current weather in Regina
+```
+
+---
+
+## Intelligent Fallback
+
+If the Knowledge Agent cannot answer from the knowledge base:
+
+```text
+Knowledge Agent
+        ↓
+"No answer found"
+        ↓
+Research Agent
+        ↓
+Final Response
+```
+
+This prevents failed responses and allows the system to answer questions outside the local knowledge base.
+
+---
+
+## Memory
+
+Conversation memory enables:
+
+- Follow-up questions
+- Context awareness
+- Query rewriting
+- Multi-turn conversations
+
+Example:
+
+```text
+User:
+What is LangGraph?
+
+User:
+Who created it?
+```
+
+Query Rewriter converts:
+
+```text
+Who created it?
+```
+
+into:
+
+```text
+Who created LangGraph?
+```
+
+before retrieval.
+
+---
 
 ## Logging & Monitoring
 
 - Structured Logging
-- Execution Tracing
-- Workflow Visibility
-- Agent Activity Monitoring
+- Agent Selection Logs
+- Retrieval Logs
+- Search Logs
+- RAG Tracing
+- Memory Visibility
 
 ---
 
 # Current Architecture
 
 ```text
-                          User
-                            │
-                            ▼
-                     LangGraph Router
-                            │
-                ┌───────────┴───────────┐
-                │                       │
-                ▼                       ▼
+                               User
+                                 │
+                                 ▼
 
-        Research Agent          Knowledge Agent
-        (Internet Search)       (RAG Search)
+                         Router Agent
+                                 │
+                 ┌───────────────┴───────────────┐
+                 │                               │
+                 ▼                               ▼
 
-                │                       │
-                ▼                       ▼
+          Knowledge Agent                Research Agent
+             (RAG)                       (Internet)
 
-         DuckDuckGo Search       ChromaDB Vector Store
-                │                       │
-                ▼                       ▼
+                 │                               │
+                 ▼                               ▼
 
-         NVIDIA Nemotron         NVIDIA Embeddings
+          Query Rewriter                 DuckDuckGo Search
+                 │
+                 ▼
 
-                └───────────┬───────────┘
-                            │
-                            ▼
-                         Response
+        Hybrid Retriever
+       ┌────────┴────────┐
+       │                 │
+       ▼                 ▼
+
+ Vector Search     Keyword Search
+       │                 │
+       └────────┬────────┘
+                ▼
+
+           Reranker
+                │
+                ▼
+
+        NVIDIA Nemotron
+                │
+                ▼
+
+            Response
+
 ```
-
----
-
-# Tech Stack
-
-## AI / LLM
-
-- NVIDIA NIM
-- NVIDIA Nemotron
-- NVIDIA Embeddings
-
-## Agent Framework
-
-- LangGraph
-
-## Vector Database
-
-- ChromaDB
-
-## Search
-
-- DuckDuckGo Search
-
-## Language
-
-- Python 3.12+
-
-## Validation
-
-- Pydantic
-
-## Logging
-
-- Python Logging
 
 ---
 
 # Project Structure
 
 ```text
-autonomous-business-ops/
+app/
 
-│
-├── app/
+├── agents/
+│   ├── knowledge_agent.py
+│   ├── query_rewriter.py
+│   ├── research_agent.py
+│   └── router_agent.py
 │
 ├── config/
 │   └── settings.py
+│
+├── documents/
+│   └── langgraph.txt
 │
 ├── embeddings/
 │   ├── embedding_service.py
@@ -127,40 +207,80 @@ autonomous-business-ops/
 │   ├── chunker.py
 │   └── ingest_documents.py
 │
-├── models/
-│   ├── report.py
-│   └── state.py
+├── llm/
+│   ├── llm_service.py
+│   └── nvidia_client.py
+│
+├── memory/
+│   ├── conversation_memory.py
+│   └── memory_manager.py
+│
+├── prompts/
+│   └── system_prompts.py
 │
 ├── rag/
-│   └── retriever.py
+│   ├── retriever.py
+│   ├── keyword_retriever.py
+│   ├── hybrid_retriever.py
+│   └── reranker.py
+│
+├── schemas/
+│   ├── base.py
+│   └── research.py
 │
 ├── services/
-│   ├── llm_service.py
 │   ├── rag_service.py
 │   └── research_service.py
 │
 ├── tools/
+│   ├── search_tool.py
 │   ├── file_tool.py
-│   └── search_tool.py
+│   └── date_tool.py
 │
 ├── utils/
-│   └── logger.py
+│   ├── logger.py
+│   └── json_parser.py
 │
 ├── workflows/
 │   └── research_graph.py
 │
-├── documents/
-│
-├── outputs/
-│
-├── vector_db/
-│
 ├── main.py
-│
-├── requirements.txt
-│
-└── README.md
+├── main_router.py
+└── tests
 ```
+
+---
+
+# Tech Stack
+
+## LLM
+
+- NVIDIA Nemotron 120B
+- NVIDIA NIM
+
+## Embeddings
+
+- NVIDIA NV-Embed-v1
+
+## Vector Database
+
+- ChromaDB
+
+## Agent Framework
+
+- LangGraph
+
+## Search
+
+- DuckDuckGo Search
+
+## Validation
+
+- Pydantic
+
+## Language
+
+- Python 3.12+
 
 ---
 
@@ -206,10 +326,10 @@ pip install -r requirements.txt
 
 # Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file:
 
 ```env
-NVIDIA_NIM_API_KEY=nvapi-****
+NVIDIA_NIM_API_KEY=YOUR_API_KEY
 NVIDIA_NIM_API_URL=https://integrate.api.nvidia.com/v1
 CHAT_MODEL=nvidia/nemotron-3-super-120b-a12b
 EMBEDDING_MODEL=nvidia/nv-embed-v1
@@ -217,107 +337,41 @@ EMBEDDING_MODEL=nvidia/nv-embed-v1
 
 ---
 
-# Running Research Agent
+# Document Ingestion
 
-Start the application:
-
-```bash
-python -m app.main
-```
-
-Example:
-
-```text
-Research Topic:
-LangGraph
-```
-
-Output:
-
-```text
-TITLE
-LangGraph Overview
-
-SUMMARY
-LangGraph is a framework for building stateful AI agents...
-```
-
-Generated reports are stored in:
-
-```text
-outputs/
-```
-
----
-
-# Running Document Ingestion
-
-Place text files inside:
-
-```text
-documents/
-```
-
-Example:
+Add documents:
 
 ```text
 documents/
 
     langgraph.txt
-    mcp.txt
     ai_agents.txt
+    company_wiki.txt
 ```
 
-Run ingestion:
+Run:
 
 ```bash
 python -m app.ingestion.ingest_documents
 ```
 
-Example output:
-
-```text
-Stored: langgraph_0
-Stored: mcp_0
-Stored: ai_agents_0
-```
-
-Embeddings are stored in:
-
-```text
-vector_db/
-```
-
----
-
-# Testing Retrieval
-
-Run:
-
-```bash
-python -m app.test_retrieval
-```
-
-Example:
-
-```text
-What is LangGraph?
-```
-
 Output:
 
 ```text
-LangGraph is a framework for building stateful AI agents.
+Stored:
+langgraph_0
+langgraph_1
+langgraph_2
 ```
 
 ---
 
-# Testing RAG
+# Run Multi-Agent Router
 
-Run:
+Start:
 
 ```bash
-python -m app.test_rag
+python -m app.main_router
 ```
 
 Example:
@@ -330,162 +384,197 @@ What is LangGraph?
 Output:
 
 ```text
-LangGraph is a framework for building stateful AI agents...
+KNOWLEDGE AGENT
+
+LangGraph is a framework for building stateful AI agents.
 ```
 
 ---
 
-# Example Workflow
-
-## Research Workflow
+Example:
 
 ```text
-User Query
-      │
-      ▼
-Search Node
-      │
-      ▼
-Search Evaluation Node
-      │
-      ▼
-Research Node
-      │
-      ▼
-Save Node
-      │
-      ▼
-JSON Report
+Question:
+What is Saskatchewan?
 ```
 
----
-
-## RAG Workflow
+Output:
 
 ```text
-Question
-      │
-      ▼
-Embedding
-      │
-      ▼
-Vector Search
-      │
-      ▼
-Relevant Chunks
-      │
-      ▼
-NVIDIA Nemotron
-      │
-      ▼
-Answer
+RESEARCH AGENT
+
+Saskatchewan is a province in Western Canada...
 ```
 
 ---
 
-# Development Roadmap
+# Example Conversation
+
+```text
+User:
+What is LangGraph?
+
+Assistant:
+LangGraph is a framework for building stateful AI agents.
+
+User:
+Who created it?
+
+Query Rewriter:
+Who created LangGraph?
+
+Assistant:
+LangGraph was created by LangChain.
+```
+
+---
+
+# Retrieval Pipeline
+
+```text
+User Question
+       │
+       ▼
+
+Query Rewriter
+       │
+       ▼
+
+Hybrid Retrieval
+       │
+ ┌─────┴─────┐
+ │           │
+
+Vector     Keyword
+Search     Search
+
+ │           │
+ └─────┬─────┘
+       ▼
+
+Reranker
+       ▼
+
+Top Chunks
+       ▼
+
+LLM Answer
+```
+
+---
+
+# Current Progress
 
 ## Completed
 
-### Milestone 1
+### Phase 1
 
 - NVIDIA NIM Integration
 - LLM Service
 
-### Milestone 2
+### Phase 2
 
 - Search Tool
 - Research Service
 
-### Milestone 3
+### Phase 3
 
 - LangGraph Workflow
-- Routing Logic
 
-### Milestone 4
+### Phase 4
 
-- Logging
-- Search Evaluation
+- ChromaDB Integration
+- Embedding Service
+- Vector Search
 
-### Milestone 5
+### Phase 5
 
-- NVIDIA Embeddings
-- ChromaDB
-- Retriever
-- RAG Service
+- Knowledge Agent
+- RAG Pipeline
+- Query Rewriting
+- Memory
+
+### Phase 6
+
+- Hybrid Retrieval
+- Keyword Search
+- Reranking
+
+### Phase 7
+
+- Router Agent
+- Knowledge ↔ Research Routing
+- Research Fallback
 
 ---
 
-## Next Milestones
+# Next Roadmap
 
-### Milestone 6
+## Planner Agent
 
-Hybrid Agent Router
+Break large goals into tasks.
 
 ```text
-Question
-    │
-    ▼
-Router
-    │
- ┌──┴──┐
- │     │
- ▼     ▼
-
-RAG   Search
+Goal
+  ↓
+Planner
+  ↓
+Tasks
 ```
 
-### Milestone 7
+---
 
-Agent Memory
+## Supervisor Agent
 
-- Conversation History
-- Persistent Memory
-- Long-Term Knowledge
+Manage multiple agents.
 
-### Milestone 8
+```text
+Supervisor
+    │
+ ┌──┼──┐
+ │  │  │
 
-Multi-Agent System
+Research
+Knowledge
+Execution
+```
 
-- Research Agent
-- Knowledge Agent
-- Planner Agent
-- Supervisor Agent
+---
 
-### Milestone 9
-
-MCP Integration
+## MCP Integration
 
 - Tool Discovery
 - External Systems
-- Standardized Tool Access
+- Standardized Tool Usage
 
-### Milestone 10
+---
 
-Autonomous Business Operations Platform
+## Autonomous Business Operations
+
+Future specialized agents:
 
 - Sales Agent
 - HR Agent
-- Operations Agent
 - Finance Agent
+- Operations Agent
 - Executive Agent
 
 ---
 
 # Learning Goals
 
-This project is designed to provide hands-on experience with:
+This project demonstrates:
 
-- AI Agents
-- LangGraph
-- Retrieval-Augmented Generation (RAG)
-- Vector Databases
+- Agentic AI
+- RAG Systems
+- ChromaDB
 - NVIDIA NIM
-- Embeddings
-- Semantic Search
+- LangGraph
 - Multi-Agent Systems
-- MCP (Model Context Protocol)
-- Autonomous AI Systems
+- Query Rewriting
+- Memory Systems
+- Hybrid Search
+- Autonomous AI Architectures
 
 ---
 
@@ -497,15 +586,16 @@ MIT License
 
 # Author
 
-Rahul Bavaliya
+**Rahul Bavaliya**
 
 Software Developer | AI Engineer
 
-Location: Regina, Saskatchewan, Canada
+Regina, Saskatchewan, Canada
 
-Focus Areas:
+### Areas of Interest
 
 - Artificial Intelligence
 - Machine Learning
-- Agentic AI Systems
+- Agentic AI
+- Multi-Agent Systems
 - Autonomous Business Operations
