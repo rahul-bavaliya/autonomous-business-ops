@@ -30,9 +30,7 @@ class ResearchAgent:
             question
         )
 
-        memory.add_assistant_message(
-            report.summary
-        )
+        memory.add_assistant_message(f"{report.title}\n\n{report.summary}")
 
         return report
 

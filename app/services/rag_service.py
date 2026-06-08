@@ -1,48 +1,78 @@
-from app.rag.retriever import retriever
-from app.llm.llm_service import llm_service
-from app.utils.logger import logger
+from urllib import response
+
 from app.agents.query_rewriter import (
     query_rewriter
 )
+
+from app.rag.hybrid_retriever import (
+    hybrid_retriever
+)
+
+from app.llm.llm_service import (
+    llm_service
+)
+
+from app.rerank.reranker import reranker
+from app.utils.logger import (
+    logger
+)
+
 
 class RAGService:
 
     def answer(
         self,
         question: str,
-        history: list = None
-    ) -> str:
+        history: list
+    ) ->  dict:
 
         logger.info(
-            f"Original Question: {question}"
+            f"RAG question received: {question}"
         )
 
-        
+        history = history or []
 
+        # Rewrite query using conversation history
         rewritten_question = query_rewriter.rewrite(
             question=question,
             history=history
         )
-        logger.info(
-            f"Rewritten Question: {rewritten_question}"
-        )
-        context = retriever.retrieve(
+
+        logger.info(f"Original Question: {question}")
+
+        logger.info(f"Rewritten Question: {rewritten_question}")
+
+        # Hybrid Retrieval
+        context = hybrid_retriever.retrieve(
             rewritten_question
         )
 
+        if len(context) < 150:
+            logger.info("Insufficient context. Escalating to Research Agent.")
+            return "__NEED_RESEARCH__"
+
+        context = reranker.rerank(
+            query=rewritten_question,
+            context=context
+        )
+
+        logger.info(
+            f"Reranked Context : "
+            f"{(context)}"
+        )
+
+        # Build conversation history text
         history_text = ""
 
-        if history:
+        for message in history:
 
-            for message in history:
-
-                history_text += (
-                    f"{message['role']}: "
-                    f"{message['content']}\n"
-                )
+            history_text += (
+                f"{message['role']}: "
+                f"{message['content']}\n"
+            )
 
         prompt = f"""
-You are having a conversation with a user.
+You are a helpful AI assistant.
 
 Conversation History:
 {history_text}
@@ -53,14 +83,21 @@ Knowledge Base Context:
 Current User Question:
 {question}
 
-Rules:
-1. Use conversation history to resolve references such as:
+Instructions:
+
+1. Use the Knowledge Base Context first.
+2. Use Conversation History to resolve references:
    - it
    - they
-   - that
    - this
-2. Use the knowledge context when relevant.
-3. If the user refers to something mentioned earlier, infer the reference from history.
+   - that
+   - he
+   - she
+3. Prefer facts found in the context.
+4. If information is missing, clearly say:
+   "I could not find that information in the knowledge base."
+5. Do not invent facts.
+6. Keep answers concise but complete.
 
 Answer:
 """
@@ -68,12 +105,17 @@ Answer:
         response = llm_service.ask(
             question=prompt,
             system_prompt=(
-                "You are a helpful AI assistant."
+                "You are a helpful AI assistant "
+                "specialized in retrieval augmented generation."
             ),
             temperature=0.2
         )
 
-        return response
+        return {
+            "answer": response,
+            "context": context,
+            "context_length": len(context)
+        }
 
 
 rag_service = RAGService()

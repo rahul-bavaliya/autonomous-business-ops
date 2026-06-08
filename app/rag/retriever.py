@@ -34,8 +34,10 @@ class Retriever:
             )
         )
 
-        documents = results["documents"][0]
+        logger.info(f"Retrieved Results: {results}")
 
+        documents = results["documents"][0]
+        
         return "\n\n".join(documents)
 
 

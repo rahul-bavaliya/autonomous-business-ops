@@ -14,7 +14,7 @@ class KnowledgeAgent:
     def answer(
         self,
         question: str
-    ) -> str:
+    ) -> dict:
 
         logger.info(
             "Knowledge Agent selected"
@@ -30,15 +30,11 @@ class KnowledgeAgent:
             history=history
         )
 
-        memory.add_user_message(
-            question
-        )
-
-        memory.add_assistant_message(
-            response
-        )
-
-        return response
+        return {
+            "answer": response["answer"],
+            "context": response["context"],
+            "context_length": response["context_length"]
+        }
 
 
 knowledge_agent = KnowledgeAgent()

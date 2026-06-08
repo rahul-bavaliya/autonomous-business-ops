@@ -11,7 +11,7 @@ class LLMService:
         temperature: float = 0.2
     ) -> str:
 
-        logger.info(f"Calling model: {settings.CHAT_MODEL}")
+        # logger.info(f"Calling model: {settings.CHAT_MODEL}")
         response = client.chat.completions.create(
             model=settings.CHAT_MODEL,
             messages=[
@@ -27,7 +27,7 @@ class LLMService:
             temperature=temperature
         )
 
-        logger.info(f"Model response received")
+        logger.info(f"LLM Response Length: {len(response.choices[0].message.content)}")
         return response.choices[0].message.content
 
 

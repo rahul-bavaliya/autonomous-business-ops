@@ -22,9 +22,7 @@ class RouterAgent:
         question: str
     ) -> str:
 
-        logger.info(
-            f"Routing question: {question}"
-        )
+        logger.info(f"Routing question: {question}")
 
         question_lower = question.lower()
 

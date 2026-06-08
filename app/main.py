@@ -6,17 +6,11 @@ from app.utils.logger import logger
 
 def main():
 
-    logger.info(
-        "Application started"
-    )
+    logger.info("Application started")
 
-    topic = input(
-        "Research Topic: "
-    )
+    topic = input("Research Topic: ")
 
-    logger.info(
-        f"Running graph for topic: {topic}"
-    )
+    logger.info(f"Running graph for topic: {topic}")
 
     result = research_graph.invoke(
         {
