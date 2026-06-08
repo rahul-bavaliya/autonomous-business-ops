@@ -1,0 +1,9 @@
+LangGraph is a framework for building stateful AI agents.
+
+It uses nodes and edges.
+
+Nodes represent actions.
+
+Edges represent transitions.
+
+LangGraph supports memory, tool calling, human feedback, and multi-agent workflows.
