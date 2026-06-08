@@ -1,57 +1,76 @@
-from app.rag.retriever import retrieve
+from app.rag.retriever import retriever
 from app.llm.llm_service import llm_service
 from app.utils.logger import logger
-
+from app.agents.query_rewriter import (
+    query_rewriter
+)
 
 class RAGService:
 
     def answer(
         self,
-        question: str
+        question: str,
+        history: list = None
     ) -> str:
 
         logger.info(
-            f"RAG question received: {question}"
+            f"Original Question: {question}"
         )
 
-        # Retrieve relevant context
-        context = retrieve(
-            query=question,
-            top_k=3
-        )
+        
 
+        rewritten_question = query_rewriter.rewrite(
+            question=question,
+            history=history
+        )
         logger.info(
-            f"Retrieved context length: {len(context)}"
+            f"Rewritten Question: {rewritten_question}"
         )
+        context = retriever.retrieve(
+            rewritten_question
+        )
+
+        history_text = ""
+
+        if history:
+
+            for message in history:
+
+                history_text += (
+                    f"{message['role']}: "
+                    f"{message['content']}\n"
+                )
 
         prompt = f"""
-You are a helpful AI assistant.
+You are having a conversation with a user.
 
-Answer the user's question using ONLY the context below.
+Conversation History:
+{history_text}
 
-If the answer is not present in the context, say:
-
-"I could not find the answer in the knowledge base."
-
-======================
-CONTEXT
-======================
-
+Knowledge Base Context:
 {context}
 
-======================
-QUESTION
-======================
+Current User Question:
+{question}
+
+Rules:
+1. Use conversation history to resolve references such as:
+   - it
+   - they
+   - that
+   - this
+2. Use the knowledge context when relevant.
+3. If the user refers to something mentioned earlier, infer the reference from history.
+
+Answer:
 """
 
         response = llm_service.ask(
-            question=question,
-            system_prompt=prompt,
+            question=prompt,
+            system_prompt=(
+                "You are a helpful AI assistant."
+            ),
             temperature=0.2
-        )
-
-        logger.info(
-            "RAG answer generated"
         )
 
         return response

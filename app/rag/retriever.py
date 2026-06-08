@@ -8,27 +8,35 @@ from app.embeddings.vector_store import (
 
 from app.utils.logger import logger
 
+class Retriever:
+    def __init__(self):
+        self.embedding_service = embedding_service
+        self.vector_store = vector_store
 
-def retrieve(
-    query: str,
-    top_k: int = 3
-):
+    def retrieve(
+        self,
+        query: str,
+        top_k: int = 3
+    ):
 
-    logger.info(
-        f"Retrieving for query: {query}"
-    )
-
-    query_embedding = (
-        embedding_service.embed(query)
-    )
-
-    results = (
-        vector_store.search(
-            embedding=query_embedding,
-            top_k=top_k
+        logger.info(
+            f"Retrieving for query: {query}"
         )
-    )
 
-    documents = results["documents"][0]
+        query_embedding = (
+            self.embedding_service.embed(query)
+        )
 
-    return "\n\n".join(documents)
+        results = (
+            self.vector_store.search(
+                embedding=query_embedding,
+                top_k=top_k
+            )
+        )
+
+        documents = results["documents"][0]
+
+        return "\n\n".join(documents)
+
+
+retriever = Retriever()

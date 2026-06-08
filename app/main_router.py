@@ -19,47 +19,53 @@ from app.utils.logger import logger
 
 def main():
 
-    logger.info(
-        "Router Application Started"
-    )
+    while True:
+    
+    
+        logger.info(
+            "Router Application Started"
+        )
 
-    question = input(
-        "Question: "
-    )
+        question = input(
+            "Question: "
+        )
 
-    route = router_agent.route(
-        question
-    )
-
-    if route == "knowledge":
-
-        answer = knowledge_agent.answer(
+        route = router_agent.route(
             question
         )
 
-        print("\nKNOWLEDGE AGENT\n")
-        print(answer)
+        if route == "knowledge":
 
-    else:
+            answer = knowledge_agent.answer(
+                question
+            )
 
-        search_context = search_tool.search(
-            question
-        )
+            print("\nKNOWLEDGE AGENT\n")
+            print(answer)
 
-        report = research_service.research(
-            topic=question,
-            search_results=search_context
-        )
+        else:
 
-        print("\nRESEARCH AGENT\n")
+            search_context = search_tool.search(
+                question
+            )
 
-        print(
-            f"\nTITLE\n{report.title}\n"
-        )
+            report = research_service.research(
+                topic=question,
+                search_results=search_context
+            )
 
-        print(
-            f"\nSUMMARY\n{report.summary}\n"
-        )
+            print("\nRESEARCH AGENT\n")
+
+            print(
+                f"\nTITLE\n{report.title}\n"
+            )
+
+            print(
+                f"\nSUMMARY\n{report.summary}\n"
+            )
+
+        if question.lower() == "exit":
+            break   
 
 
 if __name__ == "__main__":
