@@ -12,19 +12,19 @@ Traditional software follows predefined workflows.
 
 Agentic systems can:
 
-* Observe
-* Reason
-* Decide
-* Act
+- Observe
+- Reason
+- Decide
+- Act
 
 This project explores how to build autonomous business workflows using:
 
-* LangGraph
-* NVIDIA NIM
-* Embeddings
-* RAG
-* Multi-Agent Systems
-* MCP (Model Context Protocol)
+- LangGraph
+- NVIDIA NIM
+- Embeddings
+- RAG
+- Multi-Agent Systems
+- MCP (Model Context Protocol)
 
 ---
 
@@ -34,14 +34,14 @@ This project explores how to build autonomous business workflows using:
 
 The platform currently supports:
 
-* User research requests
-* DuckDuckGo search integration
-* NVIDIA NIM LLM integration
-* Structured JSON responses
-* LangGraph workflows
-* Quality validation
-* Automatic report generation
-* Timestamped output files
+- User research requests
+- DuckDuckGo search integration
+- NVIDIA NIM LLM integration
+- Structured JSON responses
+- LangGraph workflows
+- Quality validation
+- Automatic report generation
+- Timestamped output files
 
 Example:
 
@@ -103,27 +103,27 @@ Output:
 
 ## AI Framework
 
-* LangGraph
+- LangGraph
 
 ## LLM Provider
 
-* NVIDIA NIM API
+- NVIDIA NIM API
 
 ## Search
 
-* DDGS (DuckDuckGo Search)
+- DDGS (DuckDuckGo Search)
 
 ## Validation
 
-* Pydantic
+- Pydantic
 
 ## Language
 
-* Python 3.12+
+- Python 3.12+
 
 ## Logging
 
-* Python Logging
+- Python Logging
 
 ---
 
@@ -238,7 +238,7 @@ pip install -r requirements.txt
 Create a `.env` file.
 
 ```env
-NVIDIA_API_KEY=YOUR_API_KEY
+NVIDIA_NIM_API_KEY=YOUR_API_KEY
 NVIDIA_NIM_API_URL=https://integrate.api.nvidia.com/v1
 CHAT_MODEL=nvidia/nemotron-3-super-120b-a12b
 EMBEDDING_MODEL=nvidia/nv-embed-v1
@@ -280,11 +280,11 @@ output_20260605_152820_722049.json
 
 The platform provides detailed logs for:
 
-* Search execution
-* Routing decisions
-* LLM requests
-* Validation
-* File generation
+- Search execution
+- Routing decisions
+- LLM requests
+- Validation
+- File generation
 
 Example:
 
@@ -306,52 +306,52 @@ Running Save Node
 
 ## Phase 1 (Completed)
 
-* NVIDIA NIM Integration
-* LangGraph Workflow
-* Search Tool
-* Structured Output
-* Logging
-* JSON Export
+- NVIDIA NIM Integration
+- LangGraph Workflow
+- Search Tool
+- Structured Output
+- Logging
+- JSON Export
 
 ## Phase 2 (In Progress)
 
-* Router Node
-* Tool Selection
-* Conditional Edges
-* Retry Logic
+- Router Node
+- Tool Selection
+- Conditional Edges
+- Retry Logic
 
 ## Phase 3
 
-* NVIDIA Embeddings
-* Chunking
-* Vector Database
-* Retrieval
-* RAG Pipeline
+- NVIDIA Embeddings
+- Chunking
+- Vector Database
+- Retrieval
+- RAG Pipeline
 
 ## Phase 4
 
-* Persistent Memory
-* Knowledge Base
-* Long-Term Context
+- Persistent Memory
+- Knowledge Base
+- Long-Term Context
 
 ## Phase 5
 
-* Multi-Agent System
+- Multi-Agent System
 
 Agents:
 
-* Executive Agent
-* Research Agent
-* Sales Agent
-* Finance Agent
-* Operations Agent
+- Executive Agent
+- Research Agent
+- Sales Agent
+- Finance Agent
+- Operations Agent
 
 ## Phase 6
 
-* MCP Integration
-* External Tools
-* SaaS Integrations
-* Autonomous Workflows
+- MCP Integration
+- External Tools
+- SaaS Integrations
+- Autonomous Workflows
 
 ---
 
@@ -359,15 +359,15 @@ Agents:
 
 This project is designed to teach:
 
-* Agent Engineering
-* LangGraph
-* Tool Calling
-* LLM Orchestration
-* RAG Systems
-* Vector Databases
-* Multi-Agent Systems
-* MCP
-* Production AI Architecture
+- Agent Engineering
+- LangGraph
+- Tool Calling
+- LLM Orchestration
+- RAG Systems
+- Vector Databases
+- Multi-Agent Systems
+- MCP
+- Production AI Architecture
 
 ---
 
@@ -375,11 +375,11 @@ This project is designed to teach:
 
 The final platform will function as a virtual business operations team where specialized AI agents collaborate to:
 
-* Research information
-* Retrieve company knowledge
-* Analyze business data
-* Generate recommendations
-* Coordinate workflows
-* Execute operational tasks
+- Research information
+- Retrieve company knowledge
+- Analyze business data
+- Generate recommendations
+- Coordinate workflows
+- Execute operational tasks
 
 The goal is to evolve from a simple research assistant into a fully autonomous business operations platform.

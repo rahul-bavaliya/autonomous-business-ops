@@ -3,6 +3,8 @@ import os
 
 load_dotenv()
 
+
+
 class Settings:
 
     NVIDIA_API_KEY= os.getenv(
@@ -23,3 +25,7 @@ class Settings:
     )
 
 settings = Settings()
+print("settings =", settings)
+print("settings.NVIDIA_API_KEY =", repr(settings.NVIDIA_API_KEY))
+print("settings.NVIDIA_API_URL =", repr(settings.NVIDIA_API_URL))
+
