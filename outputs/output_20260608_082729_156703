@@ -1,0 +1,18 @@
+{
+    "title": "IRCC Secure Account Overview",
+    "summary": "The IRCC secure account allows individuals to manage immigration, citizenship, and refugee applications online. Access is via GCKey username/password or email/password, with two-factor authentication required for security. Accounts can be created through official IRCC links or institutional guides, and they provide a portal to submit documents, check status, and receive updates.",
+    "key_points": [
+        "Sign in using GCKey credentials or email/password on the IRCC portal.",
+        "Two-factor authentication is mandatory after entering credentials.",
+        "The account enables online submission and tracking of immigration, citizenship, and refugee applications.",
+        "Account creation resources are available on Canada.ca and through educational institution PDFs.",
+        "Forgot password recovery options are provided on the sign\u2011in page."
+    ],
+    "recommendations": [
+        "Use a strong, unique password for your GCKey or email login and update it regularly.",
+        "Enable and maintain two-factor authentication (e.g., authenticator app or SMS) for added security.",
+        "Keep your recovery email and phone number up to date to avoid lockout.",
+        "Bookmark the official IRCC sign\u2011in page (https://www.canada.ca/en/immigration-refugees-citizenship/services/application/account.html) to avoid phishing sites.",
+        "Periodically review your account activity and application status to ensure timely responses to IRCC requests."
+    ]
+}

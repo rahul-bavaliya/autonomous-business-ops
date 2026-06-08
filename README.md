@@ -1,117 +1,278 @@
-# Autonomous Business Operations Platform
+# Autonomous Business Operations Agent Platform
 
-An AI-powered autonomous business operations platform built with LangGraph, NVIDIA NIM, and Agentic AI principles.
+An AI-powered multi-agent platform that combines:
 
-The long-term vision is to create a virtual operations team composed of specialized AI agents that can perform research, planning, decision-making, knowledge retrieval, and business process automation.
+- Large Language Models (LLMs)
+- Retrieval-Augmented Generation (RAG)
+- Semantic Search
+- Internet Research
+- Agent Memory
+- Query Rewriting
+- Multi-Agent Routing
+- Workflow Orchestration
 
----
-
-# Project Vision
-
-Traditional software follows predefined workflows.
-
-Agentic systems can:
-
-- Observe
-- Reason
-- Decide
-- Act
-
-This project explores how to build autonomous business workflows using:
-
-- LangGraph
-- NVIDIA NIM
-- Embeddings
-- RAG
-- Multi-Agent Systems
-- MCP (Model Context Protocol)
+The long-term goal is to build an autonomous team of AI agents capable of researching, retrieving knowledge, planning, collaborating, and executing business workflows.
 
 ---
 
-# Current Features
+# Features
+
+## Knowledge Agent (RAG)
+
+- NVIDIA Embeddings (`nv-embed-v1`)
+- ChromaDB Vector Database
+- Semantic Search
+- Hybrid Retrieval
+- Keyword Search
+- Reranking
+- Query Rewriting
+- Conversational RAG
+- Memory-Aware Retrieval
+
+---
 
 ## Research Agent
 
-The platform currently supports:
+- DuckDuckGo Search
+- Web Research
+- Structured Research Reports
+- JSON Output Validation
+- Search Result Summarization
+- External Knowledge Retrieval
 
-- User research requests
-- DuckDuckGo search integration
-- NVIDIA NIM LLM integration
-- Structured JSON responses
-- LangGraph workflows
-- Quality validation
-- Automatic report generation
-- Timestamped output files
+---
+
+## Router Agent
+
+Routes questions to the appropriate agent.
+
+### Knowledge Route
+
+Used when the question is likely answerable from the internal knowledge base.
 
 Example:
 
-Input:
-
 ```text
-What is Anthropic MCP?
+What is LangGraph?
+Who created it?
 ```
 
-Output:
+### Research Route
 
-```json
-{
-  "title": "Model Context Protocol (MCP)",
-  "summary": "...",
-  "key_points": [],
-  "recommendations": []
-}
+Used when the question requires external information.
+
+Example:
+
+```text
+What is Saskatchewan?
+Latest NVIDIA stock news
+Current weather in Regina
 ```
 
 ---
 
-# Architecture
+## Intelligent Fallback
+
+If the Knowledge Agent cannot answer from the knowledge base:
 
 ```text
-                ┌─────────────┐
-                │ User Input  │
-                └──────┬──────┘
-                       │
-                       ▼
-                ┌─────────────┐
-                │   Router    │
-                └──────┬──────┘
-                       │
-         ┌─────────────┴─────────────┐
-         │                           │
-         ▼                           ▼
-   Date Tool                  Research Flow
-                                   │
-                                   ▼
-                              Search Node
-                                   │
-                                   ▼
-                          Quality Check Node
-                                   │
-                                   ▼
-                            Research Node
-                                   │
-                                   ▼
-                               Save Node
-                                   │
-                                   ▼
-                               JSON File
+Knowledge Agent
+        ↓
+"No answer found"
+        ↓
+Research Agent
+        ↓
+Final Response
+```
+
+This prevents failed responses and allows the system to answer questions outside the local knowledge base.
+
+---
+
+## Memory
+
+Conversation memory enables:
+
+- Follow-up questions
+- Context awareness
+- Query rewriting
+- Multi-turn conversations
+
+Example:
+
+```text
+User:
+What is LangGraph?
+
+User:
+Who created it?
+```
+
+Query Rewriter converts:
+
+```text
+Who created it?
+```
+
+into:
+
+```text
+Who created LangGraph?
+```
+
+before retrieval.
+
+---
+
+## Logging & Monitoring
+
+- Structured Logging
+- Agent Selection Logs
+- Retrieval Logs
+- Search Logs
+- RAG Tracing
+- Memory Visibility
+
+---
+
+# Current Architecture
+
+```text
+                               User
+                                 │
+                                 ▼
+
+                         Router Agent
+                                 │
+                 ┌───────────────┴───────────────┐
+                 │                               │
+                 ▼                               ▼
+
+          Knowledge Agent                Research Agent
+             (RAG)                       (Internet)
+
+                 │                               │
+                 ▼                               ▼
+
+          Query Rewriter                 DuckDuckGo Search
+                 │
+                 ▼
+
+        Hybrid Retriever
+       ┌────────┴────────┐
+       │                 │
+       ▼                 ▼
+
+ Vector Search     Keyword Search
+       │                 │
+       └────────┬────────┘
+                ▼
+
+           Reranker
+                │
+                ▼
+
+        NVIDIA Nemotron
+                │
+                ▼
+
+            Response
+
 ```
 
 ---
 
-# Technology Stack
+# Project Structure
 
-## AI Framework
+```text
+app/
+
+├── agents/
+│   ├── knowledge_agent.py
+│   ├── query_rewriter.py
+│   ├── research_agent.py
+│   └── router_agent.py
+│
+├── config/
+│   └── settings.py
+│
+├── documents/
+│   └── langgraph.txt
+│
+├── embeddings/
+│   ├── embedding_service.py
+│   └── vector_store.py
+│
+├── ingestion/
+│   ├── chunker.py
+│   └── ingest_documents.py
+│
+├── llm/
+│   ├── llm_service.py
+│   └── nvidia_client.py
+│
+├── memory/
+│   ├── conversation_memory.py
+│   └── memory_manager.py
+│
+├── prompts/
+│   └── system_prompts.py
+│
+├── rag/
+│   ├── retriever.py
+│   ├── keyword_retriever.py
+│   ├── hybrid_retriever.py
+│   └── reranker.py
+│
+├── schemas/
+│   ├── base.py
+│   └── research.py
+│
+├── services/
+│   ├── rag_service.py
+│   └── research_service.py
+│
+├── tools/
+│   ├── search_tool.py
+│   ├── file_tool.py
+│   └── date_tool.py
+│
+├── utils/
+│   ├── logger.py
+│   └── json_parser.py
+│
+├── workflows/
+│   └── research_graph.py
+│
+├── main.py
+├── main_router.py
+└── tests
+```
+
+---
+
+# Tech Stack
+
+## LLM
+
+- NVIDIA Nemotron 120B
+- NVIDIA NIM
+
+## Embeddings
+
+- NVIDIA NV-Embed-v1
+
+## Vector Database
+
+- ChromaDB
+
+## Agent Framework
 
 - LangGraph
 
-## LLM Provider
-
-- NVIDIA NIM API
-
 ## Search
 
-- DDGS (DuckDuckGo Search)
+- DuckDuckGo Search
 
 ## Validation
 
@@ -121,78 +282,6 @@ Output:
 
 - Python 3.12+
 
-## Logging
-
-- Python Logging
-
----
-
-# Project Structure
-
-```text
-autonomous-business-ops/
-
-├── app/
-│   ├── llm/
-│   │   └── llm_service.py
-│   │
-│   ├── models/
-│   │   └── report.py
-│   │
-│   ├── services/
-│   │   └── research_service.py
-│   │
-│   ├── tools/
-│   │   ├── search_tool.py
-│   │   └── file_tool.py
-│   │
-│   ├── utils/
-│   │   └── logger.py
-│   │
-│   ├── workflows/
-│   │   └── research_graph.py
-│   │
-│   └── main.py
-│
-├── outputs/
-│
-├── .env
-├── requirements.txt
-└── README.md
-```
-
----
-
-# Workflow
-
-## Research Workflow
-
-```text
-START
-  │
-  ▼
-Router
-  │
-  ├── Date Tool
-  │      │
-  │      ▼
-  │    Save
-  │
-  └── Search
-          │
-          ▼
-   Quality Check
-          │
-          ▼
-      Research
-          │
-          ▼
-        Save
-          │
-          ▼
-         END
-```
-
 ---
 
 # Installation
@@ -200,30 +289,32 @@ Router
 ## Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/YOUR_USERNAME/autonomous-business-ops.git
 
 cd autonomous-business-ops
 ```
 
+---
+
 ## Create Virtual Environment
+
+### Windows
 
 ```bash
 python -m venv .venv
-```
 
-Activate:
-
-Windows:
-
-```powershell
 .venv\Scripts\activate
 ```
 
-Linux/Mac:
+### Linux / Mac
 
 ```bash
+python3 -m venv .venv
+
 source .venv/bin/activate
 ```
+
+---
 
 ## Install Dependencies
 
@@ -235,7 +326,7 @@ pip install -r requirements.txt
 
 # Environment Variables
 
-Create a `.env` file.
+Create a `.env` file:
 
 ```env
 NVIDIA_NIM_API_KEY=YOUR_API_KEY
@@ -246,140 +337,265 @@ EMBEDDING_MODEL=nvidia/nv-embed-v1
 
 ---
 
-# Run Application
+# Document Ingestion
+
+Add documents:
+
+```text
+documents/
+
+    langgraph.txt
+    ai_agents.txt
+    company_wiki.txt
+```
+
+Run:
 
 ```bash
-python -m app.main
+python -m app.ingestion.ingest_documents
+```
+
+Output:
+
+```text
+Stored:
+langgraph_0
+langgraph_1
+langgraph_2
+```
+
+---
+
+# Run Multi-Agent Router
+
+Start:
+
+```bash
+python -m app.main_router
 ```
 
 Example:
 
 ```text
-Research Topic: LangGraph
+Question:
+What is LangGraph?
+```
+
+Output:
+
+```text
+KNOWLEDGE AGENT
+
+LangGraph is a framework for building stateful AI agents.
 ```
 
 ---
-
-# Sample Output
-
-Output files are stored in:
-
-```text
-outputs/
-```
 
 Example:
 
 ```text
-output_20260605_152820_722049.json
+Question:
+What is Saskatchewan?
 ```
 
----
-
-# Logging
-
-The platform provides detailed logs for:
-
-- Search execution
-- Routing decisions
-- LLM requests
-- Validation
-- File generation
-
-Example:
+Output:
 
 ```text
-Running Search Node
-Search result count: 5
+RESEARCH AGENT
 
-Running Quality Check Node
-Search quality is GOOD
-
-Running Research Node
-
-Running Save Node
+Saskatchewan is a province in Western Canada...
 ```
 
 ---
 
-# Roadmap
+# Example Conversation
 
-## Phase 1 (Completed)
+```text
+User:
+What is LangGraph?
+
+Assistant:
+LangGraph is a framework for building stateful AI agents.
+
+User:
+Who created it?
+
+Query Rewriter:
+Who created LangGraph?
+
+Assistant:
+LangGraph was created by LangChain.
+```
+
+---
+
+# Retrieval Pipeline
+
+```text
+User Question
+       │
+       ▼
+
+Query Rewriter
+       │
+       ▼
+
+Hybrid Retrieval
+       │
+ ┌─────┴─────┐
+ │           │
+
+Vector     Keyword
+Search     Search
+
+ │           │
+ └─────┬─────┘
+       ▼
+
+Reranker
+       ▼
+
+Top Chunks
+       ▼
+
+LLM Answer
+```
+
+---
+
+# Current Progress
+
+## Completed
+
+### Phase 1
 
 - NVIDIA NIM Integration
-- LangGraph Workflow
+- LLM Service
+
+### Phase 2
+
 - Search Tool
-- Structured Output
-- Logging
-- JSON Export
+- Research Service
 
-## Phase 2 (In Progress)
+### Phase 3
 
-- Router Node
-- Tool Selection
-- Conditional Edges
-- Retry Logic
+- LangGraph Workflow
 
-## Phase 3
+### Phase 4
 
-- NVIDIA Embeddings
-- Chunking
-- Vector Database
-- Retrieval
+- ChromaDB Integration
+- Embedding Service
+- Vector Search
+
+### Phase 5
+
+- Knowledge Agent
 - RAG Pipeline
+- Query Rewriting
+- Memory
 
-## Phase 4
+### Phase 6
 
-- Persistent Memory
-- Knowledge Base
-- Long-Term Context
+- Hybrid Retrieval
+- Keyword Search
+- Reranking
 
-## Phase 5
+### Phase 7
 
-- Multi-Agent System
+- Router Agent
+- Knowledge ↔ Research Routing
+- Research Fallback
 
-Agents:
+---
 
-- Executive Agent
-- Research Agent
+# Next Roadmap
+
+## Planner Agent
+
+Break large goals into tasks.
+
+```text
+Goal
+  ↓
+Planner
+  ↓
+Tasks
+```
+
+---
+
+## Supervisor Agent
+
+Manage multiple agents.
+
+```text
+Supervisor
+    │
+ ┌──┼──┐
+ │  │  │
+
+Research
+Knowledge
+Execution
+```
+
+---
+
+## MCP Integration
+
+- Tool Discovery
+- External Systems
+- Standardized Tool Usage
+
+---
+
+## Autonomous Business Operations
+
+Future specialized agents:
+
 - Sales Agent
+- HR Agent
 - Finance Agent
 - Operations Agent
-
-## Phase 6
-
-- MCP Integration
-- External Tools
-- SaaS Integrations
-- Autonomous Workflows
+- Executive Agent
 
 ---
 
-# Learning Objectives
+# Learning Goals
 
-This project is designed to teach:
+This project demonstrates:
 
-- Agent Engineering
-- LangGraph
-- Tool Calling
-- LLM Orchestration
+- Agentic AI
 - RAG Systems
-- Vector Databases
+- ChromaDB
+- NVIDIA NIM
+- LangGraph
 - Multi-Agent Systems
-- MCP
-- Production AI Architecture
+- Query Rewriting
+- Memory Systems
+- Hybrid Search
+- Autonomous AI Architectures
 
 ---
 
-# Future Vision
+# License
 
-The final platform will function as a virtual business operations team where specialized AI agents collaborate to:
+MIT License
 
-- Research information
-- Retrieve company knowledge
-- Analyze business data
-- Generate recommendations
-- Coordinate workflows
-- Execute operational tasks
+---
 
-The goal is to evolve from a simple research assistant into a fully autonomous business operations platform.
+# Author
+
+**Rahul Bavaliya**
+
+Software Developer | AI Engineer
+
+Regina, Saskatchewan, Canada
+
+### Areas of Interest
+
+- Artificial Intelligence
+- Machine Learning
+- Agentic AI
+- Multi-Agent Systems
+- Autonomous Business Operations

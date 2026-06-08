@@ -63,7 +63,7 @@ def search_node(
 ):
 
     logger.info(
-        "Running Search Node"
+        f"Running Search Node: {state['topic']}"
     )
 
     result = search_tool.search(
