@@ -23,7 +23,7 @@ class ResearchService:
         {search_results}
         """
 
-        response = llm_service.ask(
+        response = llm_service.ask_json(
             question=prompt,
             system_prompt=RESEARCH_REPORT_PROMPT,
             temperature=0.1

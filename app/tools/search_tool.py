@@ -8,7 +8,7 @@ class SearchTool:
     def search(
         self,
         query: str,
-        max_results: int = 5
+        max_results: int = 10
     ) -> dict:
 
         logger.info(
@@ -61,12 +61,12 @@ class SearchTool:
 
                 formatted_results.append(
                     f"""
-Title: {item['title']}
+                Title: {item['title']}
 
-Content: {item['body']}
+                Content: {item['body']}
 
-URL: {item['href']}
-"""
+                URL: {item['href']}
+                """
                 )
 
             search_results = "\n\n".join(

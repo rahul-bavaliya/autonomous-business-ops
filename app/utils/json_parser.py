@@ -1,16 +1,48 @@
 import json
+import re
 
 
 def parse_json(text: str):
 
-    text = text.replace(
-        "```json",
-        ""
-    )
+    try:
+        return json.loads(text)
 
-    text = text.replace(
-        "```",
-        ""
-    )
+    except Exception:
 
-    return json.loads(text.strip())
+        # Remove markdown code blocks
+
+        text = text.replace(
+            "```json",
+            ""
+        )
+
+        text = text.replace(
+            "```",
+            ""
+        )
+
+        # Remove trailing commas
+
+        text = re.sub(
+            r",(\s*[}\]])",
+            r"\1",
+            text
+        )
+
+        # Extract JSON object
+
+        match = re.search(
+            r"\{.*\}",
+            text,
+            re.DOTALL
+        )
+
+        if match:
+
+            return json.loads(
+                match.group()
+            )
+
+        raise ValueError(
+            "Could not parse JSON response"
+        )
